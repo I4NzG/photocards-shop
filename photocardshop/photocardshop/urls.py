@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('login')),
     path('', include('myApp.urls')),
+    path('oauth/', include('social_django.urls', namespace='social')), 
 ]

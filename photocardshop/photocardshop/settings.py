@@ -38,7 +38,33 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myApp.apps.MyappConfig',
+    'social_django', 
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',  # <-- para Google
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+# Google OAuth2 keys
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '63499154856-t0ca1gjfh3v1uqbdhbkua7tv4hton2up.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'  # o donde quieras redirigir tras login
+LOGOUT_REDIRECT_URL = 'login'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ianzepeda2004@gmail.com'
+EMAIL_HOST_PASSWORD = 'knzm ngxw mgrm dwaf'  
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,6 +88,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -69,6 +97,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'photocardshop.wsgi.application'
 
+LOGIN_URL = 'login'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -103,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
