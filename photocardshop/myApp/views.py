@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
+from django.contrib.auth import logout
 
 # Registro de usuario
 def user_register(request):
@@ -35,6 +36,10 @@ def user_login(request):
             messages.error(request, "Usuario o contraseña incorrectos.")
     
     return render(request, 'user_login.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 @login_required
 def dashboard(request):
