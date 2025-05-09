@@ -1,9 +1,8 @@
-# myApp/views.py
-
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth import logout
@@ -20,6 +19,27 @@ def user_register(request):
         form = UserRegisterForm()
     
     return render(request, 'user_register.html', {'form': form})
+
+def complete_register(request):
+    email = request.GET.get('email')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        User = get_user_model()
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El nombre de usuario ya existe.')
+        else:
+            user = User.objects.get(email=email)
+            user.username = username
+            user.password = make_password(password) 
+            user.save()
+            messages.success(request, 'Registro completado. Ya puedes iniciar sesión.')
+            return redirect('login')
+
+    return render(request, 'complete_register.html', {'email': email})
+
+
 
 def user_login(request):
     if request.method == 'POST':
