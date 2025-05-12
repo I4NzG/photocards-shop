@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,7 +53,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '63499154856-t0ca1gjfh3v1uqbdhbkua7tv4hton2up.ap
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'dashboard'  # o donde quieras redirigir tras login
+LOGIN_REDIRECT_URL = 'tienda'  # o donde quieras redirigir tras login
 LOGOUT_REDIRECT_URL = 'login'
 
 
@@ -172,3 +173,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

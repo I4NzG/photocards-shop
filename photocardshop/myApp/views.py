@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth import logout
+from .models import Card
 
 # Registro de usuario
 def user_register(request):
@@ -51,7 +52,7 @@ def user_login(request):
         if user is not None:
             login(request, user)
             messages.success(request, f"Bienvenido, {user.username}")
-            return redirect('dashboard')
+            return redirect('tienda')
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
     
@@ -77,3 +78,25 @@ def user_update(request):
         form = UserUpdateForm(instance=request.user)
 
     return render(request, 'user_update.html', {'form': form})
+
+
+@login_required
+def main_store(request):
+    featured_cards = Card.objects.filter(is_featured=True)[:8]
+    new_arrivals = Card.objects.order_by('-created_at')[:8]
+    cart_item_count = request.session.get('cart_item_count', 0)
+
+    context = {
+        'featured_cards': featured_cards,
+        'new_arrivals': new_arrivals,
+        'cart_item_count': cart_item_count,
+    }
+    return render(request, 'main_store.html', context)
+
+@login_required
+def user_profile(request):
+    return render(request, 'user_profile.html', {'user': request.user})
+
+@login_required
+def carrito(request):
+    return render(request, 'carrito.html')
