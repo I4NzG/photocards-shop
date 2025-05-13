@@ -10,6 +10,7 @@ from .models import Card
 from .forms import AddCardForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 # Registro de usuario
 def user_register(request):
@@ -100,9 +101,6 @@ def main_store(request):
 def user_profile(request):
     return render(request, 'user_profile.html', {'user': request.user})
 
-@login_required
-def carrito(request):
-    return render(request, 'carrito.html')
 
 def is_admin(user):
     return user.is_staff or user.is_superuser
@@ -140,3 +138,59 @@ def delete_card(request, card_id):
         card.delete()
         return redirect('tienda')
     return render(request, 'delete_card_confirm.html', {'card': card})
+
+
+@login_required
+def add_to_cart(request, card_id):
+    cart = request.session.get('cart', {})
+
+
+    if isinstance(cart, list):
+        cart = {str(cid): 1 for cid in cart}
+
+    card_id_str = str(card_id)
+
+    if card_id_str in cart:
+        cart[card_id_str] += 1
+    else:
+        cart[card_id_str] = 1
+
+    request.session['cart'] = cart
+    request.session['cart_item_count'] = sum(cart.values())
+
+    messages.success(request, "Carta agregada al carrito exitosamente.")
+    return redirect('tienda')
+
+
+
+
+@login_required
+def carrito(request):
+    cart = request.session.get('cart', {})
+
+    # Si por alguna razón sigue siendo lista, convierte a dict
+    if isinstance(cart, list):
+        cart = {str(cid): 1 for cid in cart}
+
+    cart_items = []
+    total = 0
+    for card_id, quantity in cart.items():
+        card = get_object_or_404(Card, pk=card_id)
+        subtotal = card.price * quantity
+        total += subtotal
+        cart_items.append({
+            'id': card.id,
+            'name': card.name,
+            'rarity': card.rarity,
+            'price': card.price,
+            'quantity': quantity,
+            'total_price': subtotal,
+            'image': card.image,
+        })
+
+    context = {
+        'cart_items': cart_items,
+        'total': total,
+    }
+
+    return render(request, 'carrito.html', context)

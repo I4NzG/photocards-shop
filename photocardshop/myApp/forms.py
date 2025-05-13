@@ -25,13 +25,24 @@ class UserUpdateForm(forms.ModelForm):
            for fieldname in ['username', 'email', 'first_name', 'last_name']:
                self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
 
+
 class AddCardForm(forms.ModelForm):
     class Meta:
         model = Card
         fields = ['name', 'description', 'rarity', 'price', 'image', 'is_featured']
+        labels = {
+            'name': 'Nombre',
+            'description': 'Descripción',
+            'rarity': 'Rareza',
+            'price': 'Precio',
+            'image': 'Imagen',
+            'is_featured': '¿Es edición limitada?',
+        }
 
     def __init__(self, *args, **kwargs):
         super(AddCardForm, self).__init__(*args, **kwargs)
         for fieldname in self.fields:
-            self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
-   
+            if fieldname == 'is_featured':
+                self.fields[fieldname].widget.attrs.update({'class': 'form-check-input'})
+            else:
+                self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
