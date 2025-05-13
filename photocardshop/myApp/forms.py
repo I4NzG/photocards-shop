@@ -9,12 +9,18 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-class UserUpdateForm(forms.ModelForm):
+class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'password1', 'password2']
 
-    def __init__(self, *args, **kwargs):
-        super(UserUpdateForm, self).__init__(*args, **kwargs)
-        for fieldname in ['username', 'email']:
-            self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
+class UserUpdateForm(forms.ModelForm):
+       class Meta:
+           model = User
+           fields = ['username', 'email', 'first_name', 'last_name']
+   
+       def __init__(self, *args, **kwargs):
+           super(UserUpdateForm, self).__init__(*args, **kwargs)
+           for fieldname in ['username', 'email', 'first_name', 'last_name']:
+               self.fields[fieldname].widget.attrs.update({'class': 'form-control'})
+   

@@ -18,4 +18,5 @@ urlpatterns = [
     path('tienda/', views.main_store, name='tienda'),
     path('perfil/', views.user_profile, name='perfil'),
     path('carrito/', views.carrito, name='carrito'),
+    path('', views.main_store, name='home'),  
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -68,15 +68,15 @@ def dashboard(request):
 
 @login_required
 def user_update(request):
+    print(f"Username: {request.user.username}, First Name: {request.user.first_name}, Last Name: {request.user.last_name}, Email: {request.user.email}")
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "¡Tu perfil ha sido actualizado!")
-            return redirect('home')
+            return redirect('tienda')
     else:
         form = UserUpdateForm(instance=request.user)
-
     return render(request, 'user_update.html', {'form': form})
 
 
