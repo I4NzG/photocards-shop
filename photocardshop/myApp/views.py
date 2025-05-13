@@ -7,6 +7,9 @@ from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth import logout
 from .models import Card
+from .forms import AddCardForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import get_object_or_404
 
 # Registro de usuario
 def user_register(request):
@@ -100,3 +103,40 @@ def user_profile(request):
 @login_required
 def carrito(request):
     return render(request, 'carrito.html')
+
+def is_admin(user):
+    return user.is_staff or user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
+def add_card(request):
+    if request.method == 'POST':
+        form = AddCardForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('tienda')
+    else:
+        form = AddCardForm()
+    return render(request, 'add_card.html', {'form': form})
+
+@login_required
+@user_passes_test(is_admin)
+def edit_card(request, card_id):
+    card = get_object_or_404(Card, pk=card_id)
+    if request.method == 'POST':
+        form = AddCardForm(request.POST, request.FILES, instance=card)
+        if form.is_valid():
+            form.save()
+            return redirect('tienda')
+    else:
+        form = AddCardForm(instance=card)
+    return render(request, 'edit_card.html', {'form': form, 'card': card})
+
+@login_required
+@user_passes_test(is_admin)
+def delete_card(request, card_id):
+    card = get_object_or_404(Card, pk=card_id)
+    if request.method == 'POST':
+        card.delete()
+        return redirect('tienda')
+    return render(request, 'delete_card_confirm.html', {'card': card})
